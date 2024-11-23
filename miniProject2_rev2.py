@@ -1,5 +1,3 @@
-# Converting the MATLAB functions to Python step by step
-
 import numpy as np
 from scipy.integrate import quad
 from scipy.optimize import fsolve
