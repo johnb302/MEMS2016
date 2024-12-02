@@ -92,8 +92,8 @@ if __name__ == "__main__":
     results = solve_ivp(odefun, [0, 200], [0], args=(params,))
 
     # Plot the results
-    plt.plot(results.t / ep ** 2, np.abs(results.y[0]))
+    plt.plot(results.t / ep ** 2, np.abs(results.y[0]), color='r', linestyle='--', label='$A_0$')
     plt.xlabel('t/ep^2')
     plt.ylabel('|A0|')
-    plt.title('Dynamics of A0 over Time')
+    plt.title('Dynamics of A0 over Non-Dimensional Time')
     plt.show()
