@@ -3,7 +3,6 @@ from scipy.integrate import quad
 from scipy.optimize import fsolve
 from scipy.integrate import solve_ivp
 from scipy.interpolate import interp1d
-from scipy.signal import hilbert, find_peaks
 import matplotlib.pyplot as plt
 
 
@@ -120,26 +119,19 @@ if __name__ == "__main__":
 
     signal = solution.y[0]
     upperEnvelope = np.zeros(len(signal))
-    # Prepend the first value of (s) to the interpolating values. This forces the model to use the same starting point for both the upper and lower envelope models.
-    u_x = [0, ]
-    u_y = [signal[0], ]
-
-    # Detect peaks and troughs and mark their location in u_x,u_y,l_x,l_y respectively.
+    time = [0, ]
+    amp = [signal[0], ]
     for k in range(1, len(signal) - 1):
         if (np.sign(signal[k] - signal[k - 1]) == 1) and (np.sign(signal[k] - signal[k + 1]) == 1):
-            u_x.append(k)
-            u_y.append(signal[k])
+            time.append(k)
+            amp.append(signal[k])
 
-    # Append the last value of (s) to the interpolating values. This forces the model to use the same ending point for both the upper and lower envelope models.
-    u_x.append(len(signal) - 1)
-    u_y.append(signal[-1])
+    time.append(len(signal) - 1)
+    amp.append(signal[-1])
+    upper = interp1d(time, amp, kind='cubic', bounds_error=False, fill_value=0.0)
 
-    # Fit suitable models to the data. Here I am using cubic splines, similarly to the MATLAB example given in the question.
-    u_p = interp1d(u_x, u_y, kind='cubic', bounds_error=False, fill_value=0.0)
-
-    # Evaluate each model over the domain of (s)
     for k in range(0, len(signal)):
-        upperEnvelope[k] = u_p(k)
+        upperEnvelope[k] = upper(k)
 
     t = results.t
     # Plot the results
